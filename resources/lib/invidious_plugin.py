@@ -23,7 +23,12 @@ class InvidiousPlugin:
         self.args = args
 
         instance_url = xbmcplugin.getSetting(self.addon_handle, "instance_url")
-        self.api_client = invidious_api.InvidiousAPIClient(instance_url)
+        is_feed_enabled = xbmcplugin.getSetting(self.addon_handle, "is_feed_enabled")
+        auth_token = xbmcplugin.getSetting(self.addon_handle, "auth_token")
+        auth_sid = xbmcplugin.getSetting(self.addon_handle, "auth_sid")
+
+        self.is_feed_enabled = is_feed_enabled
+        self.api_client = invidious_api.InvidiousAPIClient(instance_url, is_feed_enabled, auth_token, auth_sid)
 
     def build_url(self, action, **kwargs):
         if not action:
@@ -95,6 +100,12 @@ class InvidiousPlugin:
 
         self.display_list_of_videos(videos)
 
+    def display_subscriptions(self):
+        # TODO: pagination
+        videos = self.api_client.fetch_subscriptions()
+
+        self.display_list_of_videos(videos)
+
     def play_video(self, id):
         # TODO: add support for adaptive streaming
         video_info = self.api_client.fetch_video_information(id)
@@ -130,6 +141,11 @@ class InvidiousPlugin:
             label = special_list_name[0].upper() + special_list_name[1:]
             add_list_item(label, special_list_name)
 
+        # adding subrcriptions
+        # TODO:  plugin needs to restart after settings are changed for effects to show
+        if self.is_feed_enabled != "No":
+            add_list_item("Subscriptions", "view_subscriptions")
+
         self.end_of_directory()
 
     def run(self):
@@ -139,7 +155,7 @@ class InvidiousPlugin:
         """
 
         action = self.args.get("action", [None])[0]
-
+        #xbmcgui.Dialog().ok("Some Info", "base url: " + str(self.base_url) + "\nhandle: " + str(self.addon_handle) + "\nargs: " + str(self.args) + "\nactions: " + str(action))
         # debugging
         print("--------------------------------------------")
         print("base url:", self.base_url)
@@ -161,6 +177,9 @@ class InvidiousPlugin:
 
             elif action == "view_channel":
                 self.display_channel_list(self.args["channel_id"][0])
+
+            elif action == "view_subscriptions":
+                self.display_subscriptions()
 
             elif action in self.__class__.SPECIAL_LISTS:
                 special_list_name = action

@@ -113,9 +113,10 @@ class InvidiousAPIClient:
     def parse_video_list_response(response):
         data = response.json()
 
-        # The JSON from subscriptions comes packaged with an added notifications feed
+        # The JSON from subscriptions comes packaged in two, 'notifications' for new videos in the feed
+        # and 'videos' for the rest. So we need to put them together.
         if 'videos' in data:
-            data = data['videos']
+            data = data['notifications'] + data['videos']
 
         for video in data:
             for thumb in video["videoThumbnails"]:

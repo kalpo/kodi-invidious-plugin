@@ -91,14 +91,15 @@ class InvidiousAPIClient:
 
         return self.parse_video_list_response(response)
 
-    def fetch_SID_from_login(self, auth_username, auth_password):
+    @staticmethod
+    def fetch_SID_from_login( instance_url, auth_username, auth_password):
         if auth_password != "" and auth_username != "":
             data = {
                     'email' : auth_username,
                     'password' : auth_password,
                     'action' : 'singin'
             }
-            url = self.instance_url + "/login"
+            url = instance_url + "/login"
             response = requests.post(url, data)
 
             return response.history[0].cookies['SID']

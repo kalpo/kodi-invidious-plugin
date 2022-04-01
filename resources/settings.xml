@@ -7,15 +7,18 @@
 <!--    <setting id="debug" type="bool" label="32013" default="false"/>-->
 
         <setting type="sep" />
-        <setting label="Enable subscriptions feed" type="labelenum" values="No|Login|SID|token" id="is_feed_enabled" default="No"/>
-        <setting label="User name" type="text" id="auth_user" default=""  visible="eq(-1,1)" subsetting="true"/>
-        <setting label="Password" type="password" id="auth_password" default=""  visible="eq(-2,1)" subsetting="true"/>
-        <setting label="Cookie SID" type="text" id="auth_sid" default=""  visible="eq(-3,2)" subsetting="true"/>
-        <setting label="Auth Token" type="text" id="auth_token" default=""  visible="eq(-4,3)" subsetting="true"/>
+        <setting label="Enable subscriptions feed" type="labelenum" values="No|SID|token" id="is_feed_enabled" default="No"/>
+        <setting label="Auth Token" type="text" id="auth_token" default=""  visible="eq(-1,2)" subsetting="true"/>
+        <setting label="Cookie SID" type="text" id="auth_sid" default=""  visible="eq(-2,1)" subsetting="true"/>
+        <setting label="User name" type="text" id="auth_user" default=""  visible="eq(-3,1)" subsetting="true"/>
+        <setting label="Password" type="text" option="hidden" id="auth_password" default=""  visible="eq(-4,1)" subsetting="true"/>
 
+	<setting label="Click here to attempt to retrieve an SID from login details." type="action" visible="eq(-5,1)" action="RunScript(plugin.video.invidious, getSID)"/> 
+
+	<setting type="lsep" label="ATTENTION:"/>
+	<setting label="Changes might not be visible until you restart the app" enable="false"/>
     </category>
 </settings>
-
 <!--    (failed) Attempt to comply to the new settings.xml rules more
         info here: https://kodi.wiki/view/Add-on_settings_conversion
 

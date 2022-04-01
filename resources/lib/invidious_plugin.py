@@ -23,10 +23,14 @@ class InvidiousPlugin:
         self.args = args
 
         instance_url = xbmcplugin.getSetting(self.addon_handle, "instance_url")
+
+        # Auth parameters
         is_feed_enabled = xbmcplugin.getSetting(self.addon_handle, "is_feed_enabled")
         auth_token = xbmcplugin.getSetting(self.addon_handle, "auth_token")
         auth_sid = xbmcplugin.getSetting(self.addon_handle, "auth_sid")
-
+        self.auth_username = xbmcplugin.getSetting(self.addon_handle, "auth_username")
+        self.auth_password = xbmcplugin.getSetting(self.addon_handle, "auth_password")
+        
         self.is_feed_enabled = is_feed_enabled
         self.api_client = invidious_api.InvidiousAPIClient(instance_url, is_feed_enabled, auth_token, auth_sid)
 
@@ -106,6 +110,10 @@ class InvidiousPlugin:
 
         self.display_list_of_videos(videos)
 
+    def update_SID(self):
+        sid = self.api_client.fetch_SID_from_login(self.auth_username, self.auth_password)
+        xbmcplugin.setSetting(self.addon_handle, "auth_sid", sid)
+        
     def play_video(self, id):
         # TODO: add support for adaptive streaming
         video_info = self.api_client.fetch_video_information(id)
@@ -180,6 +188,9 @@ class InvidiousPlugin:
 
             elif action == "view_subscriptions":
                 self.display_subscriptions()
+            
+            elif action  == "getSID":
+                self.update_SID()
 
             elif action in self.__class__.SPECIAL_LISTS:
                 special_list_name = action

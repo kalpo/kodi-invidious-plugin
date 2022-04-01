@@ -7,9 +7,11 @@
 <!--    <setting id="debug" type="bool" label="32013" default="false"/>-->
 
         <setting type="sep" />
-        <setting label="Enable subscriptions feed" type="labelenum" values="No|SID|token" id="is_feed_enabled" default="No"/>
-        <setting label="Cookie SID" type="text" id="auth_sid" default=""  enable="eq(-1,1)" subsetting="true"/>
-        <setting label="Auth Token" type="text" id="auth_token" default=""  enable="eq(-2,2)" subsetting="true"/>
+        <setting label="Enable subscriptions feed" type="labelenum" values="No|Login|SID|token" id="is_feed_enabled" default="No"/>
+        <setting label="User name" type="text" id="auth_user" default=""  visible="eq(-1,1)" subsetting="true"/>
+        <setting label="Password" type="password" id="auth_password" default=""  visible="eq(-2,1)" subsetting="true"/>
+        <setting label="Cookie SID" type="text" id="auth_sid" default=""  visible="eq(-3,2)" subsetting="true"/>
+        <setting label="Auth Token" type="text" id="auth_token" default=""  visible="eq(-4,3)" subsetting="true"/>
 
     </category>
 </settings>

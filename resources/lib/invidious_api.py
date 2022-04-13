@@ -2,6 +2,8 @@ import time
 from collections import namedtuple
 
 import requests
+import xbmc
+import xbmcaddon
 
 VideoListItem = namedtuple("SearchResult",
     [
@@ -22,6 +24,7 @@ class InvidiousAPIClient:
         self.is_feed_enabled = is_feed_enabled
         self.auth_token = auth_token
         self.auth_sid = auth_sid
+        self.addon = xbmcaddon.Addon()
 
     def make_get_request(self, *path, **params):
         base_url = self.instance_url + "/api/v1/"
@@ -41,17 +44,17 @@ class InvidiousAPIClient:
             headers["Authentication"] = "Bearer " + self.auth_token
 
         print("========== request started ==========")
+        xbmc.log("========== request started ==========", xbmc.LOGDEBUG)
         start = time.time()
         response = requests.get(assembled_url, params=params, headers=headers, timeout=5)
         end = time.time()
-        print("========== request finished in", end - start, "s ==========")
+        xbmc.log("========== request finished in" + str(end - start) + "s ==========", xbmc.LOGDEBUG)
 
         response.raise_for_status()
 
         return response
 
-    @staticmethod
-    def parse_video_list_response(response):
+    def parse_video_list_response(self, response):
         data = response.json()
 
         # The JSON from subscriptions comes packaged in two, 'notifications' for new videos in the feed
@@ -70,12 +73,12 @@ class InvidiousAPIClient:
             # as a fallback, we just use the last one in the list (which is usually the lowest quality)
             else:
                 thumbnail_url = video["videoThumbnails"][-1]["url"]
-
+        
             yield VideoListItem(
                 video["videoId"],
                 video["title"],
                 video["author"],
-                video.get("description", "No description available"),
+                video.get("description", self.addon.getLocalizedString(30000)),
                 thumbnail_url,
                 video["viewCount"],
                 video["published"],

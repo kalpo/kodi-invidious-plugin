@@ -2,6 +2,8 @@ import sys
 
 import invidious_plugin
 import invidious_api
+
+import xbmc
 import xbmcplugin
 import xbmcaddon
 def update_SID():
